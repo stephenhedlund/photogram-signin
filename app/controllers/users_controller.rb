@@ -1,4 +1,29 @@
 class UsersController < ApplicationController
+
+  def toast_cookies
+    reset_session
+
+    redirect_to("/")
+  end
+
+  def authenticate
+    un = params.fetch("input_username")
+    pw = params.fetch("input_password")
+
+    user = User.where({:username=> un}).at(0)
+
+    if user == nil
+      redirect_to("/user_sign_in",  {:alert => user.errors.full_messages.to_sentence })
+    else
+      if user.authenticate(pw)
+        session.store(:user_id, user.id)
+        redirect_to("/")
+      else
+        redirect_to("/user_sign_in",  {:alert => user.errors.full_messages.to_sentence })
+      end
+    end
+  end
+
   def index
     @users = User.all.order({ :username => :asc })
 
@@ -16,10 +41,16 @@ class UsersController < ApplicationController
     user = User.new
 
     user.username = params.fetch("input_username")
+    user.password = params.fetch("input_password")
+    user.password_confirmation = params.fetch("input_password_confirmation")
 
-    user.save
+    save_status = user.save
 
-    redirect_to("/users/#{user.username}")
+    if save_status== true
+      redirect_to("/users/#{user.username}", {:notice=> "Welcome, " + user.username + "!"})
+    else
+      redirect_to("/user_sign_up", {:alert => user.errors.full_messages.to_sentence })
+    end
   end
 
   def update
@@ -41,6 +72,14 @@ class UsersController < ApplicationController
     user.destroy
 
     redirect_to("/users")
+  end
+
+  def sign_in
+    render({:template=>"users/sign_in"})
+  end
+
+  def sign_up
+    render({:template=>"users/sign_up"})
   end
 
 end

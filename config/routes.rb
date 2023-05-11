@@ -6,6 +6,9 @@ Rails.application.routes.draw do
 
   # CREATE
   get("/insert_user_record", {:controller => "users", :action => "create" })
+  get("/insert_user", {:controller => "users", :action => "create" })
+  get("/user_sign_out", {:controller => "users", :action=> "toast_cookies"})
+  post("/verify_credentials", {:controller => "users", :action=> "authenticate"})
 
   # READ
   get("/users", {:controller => "users", :action => "index"})
@@ -16,6 +19,14 @@ Rails.application.routes.draw do
 
   # DELETE
   get("/delete_user/:the_user_id", {:controller => "users", :action => "destroy"})
+
+  # SIGN UP
+
+  get("/user_sign_up", {:controller=> "users", :action=> "sign_up" })
+
+  # SIGN IN
+  
+  get("/user_sign_in", {:controller=> "users", :action=> "sign_in" })
 
   # Photo routes
 
@@ -36,10 +47,12 @@ Rails.application.routes.draw do
   # Comment routes
 
   # CREATE
-  get("/insert_comment_record", { :controller => "comments", :action => "create" })
+  post("/insert_comment_record", { :controller => "comments", :action => "create" })
 
   # DELETE
 
   get("/delete_comment/:the_comment_id", { :controller => "comments", :action => "destroy"})
+
+
 
 end
